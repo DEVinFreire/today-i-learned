@@ -1,4 +1,5 @@
-import { use, useState } from "react";
+import { use, useEffect, useState } from "react";
+import supabase from "./supabase";
 import "./style.css";
 
 const initialFacts = [
@@ -50,19 +51,31 @@ function Counter() {
 
 function App() {
   const [showForm, setShowForm] = useState(false);
+  const [facts, setFacts] = useState([]);
+  useEffect( function() {
+    async function getFacts() {
+      const { data: facts, error } = await supabase.from("facts").select("*");
+      if(!error) setFacts(facts);
+      setFacts(facts);
+    }
+    getFacts();
+  }, []);
 
   return (
     <>
       <Header showForm={showForm} setShowForm={setShowForm} />
-      {showForm ? <NewFactForm /> : null}
+      {showForm ? (
+        <NewFactForm setFacts={setFacts} setShowForm={setShowForm} />
+      ) : null}
 
       <main className="main">
         <CategoryFilter />
-        <FactList />
+        <FactList facts={facts} />
       </main>
     </>
   );
 }
+<NewFactForm />;
 
 function Header({ showForm, setShowForm }) {
   const appTitle = "Today I Learned";
@@ -95,14 +108,47 @@ const CATEGORIES = [
   { name: "news", color: "#8b5cf6" },
 ];
 
-function NewFactForm() {
+function isValidHttpUrl(string) {
+  let url;
+  try {
+    url = new URL(string);
+  } catch (_) {
+    return false;
+  }
+  return url.protocol === "http:" || url.protocol === "https:";
+}
+
+function NewFactForm({ setFacts, setShowForm }) {
   const [text, setText] = useState("");
-  const [source, setSource] = useState("");
+  const [source, setSource] = useState("http://example.com");
   const [category, setCategory] = useState("");
   const textLength = text.length;
 
-  function handleSubmit (e) {
+  function handleSubmit(e) {
+    // 1. Prevent beowser reload
     e.preventDefault();
+
+    // 2 check if data is valid. if so, create a new fact
+    if (text && isValidHttpUrl(source) && category && textLength <= 200);
+    // 3. create a new fact object
+    const newFact = {
+      id: Math.round(Math.random()) * 10000000,
+      text,
+      source,
+      category,
+      votesInteresting: 0,
+      votesMindblowing: 0,
+      votesFalse: 0,
+      createdIn: new Date().getFullYear(),
+    };
+    // 4. add the new fact to the UI: add the fact to the state
+    setFacts((facts) => [newFact, ...facts]);
+    // 5. reset the input fields
+    setText("");
+    setSource("");
+    setCategory("");
+    // 6. close the form
+    setShowForm(false);
   }
 
   return (
@@ -133,8 +179,6 @@ function NewFactForm() {
   );
 }
 
-<NewFactForm />;
-
 function CategoryFilter() {
   return (
     <aside>
@@ -158,9 +202,7 @@ function CategoryFilter() {
   );
 }
 
-function FactList() {
-  const facts = initialFacts;
-
+function FactList({ facts }) {
   return (
     <section>
       <ul className="facts-list">
