@@ -85,7 +85,11 @@ function App() {
 
       <main className="main">
         <CategoryFilter setCurrentCategory={setCurrentCategory} />
-        {isLoading ? <Loader /> : <FactList facts={facts} />}
+        {isLoading ? (
+          <Loader />
+        ) : (
+          <FactList facts={facts} setFacts={setFacts} />
+        )}
       </main>
     </>
   );
@@ -139,7 +143,7 @@ function isValidHttpUrl(string) {
 
 function NewFactForm({ setFacts, setShowForm }) {
   const [text, setText] = useState("");
-  const [source, setSource] = useState("http://example.com");
+  const [source, setSource] = useState("");
   const [category, setCategory] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const textLength = text.length;
@@ -148,36 +152,37 @@ function NewFactForm({ setFacts, setShowForm }) {
     // 1. Prevent beowser reload
     e.preventDefault();
     // 2 check if data is valid. if so, create a new fact
-    if (text && isValidHttpUrl(source) && category && textLength <= 200);
-    // 3. create a new fact object
-    // const newFact = {
-    //   id: Math.round(Math.random()) * 10000000,
-    //   text,
-    //   source,
-    //   category,
-    //   votesInteresting: 0,
-    //   votesMindblowing: 0,
-    //   votesFalse: 0,
-    //   createdIn: new Date().getFullYear(),
-    // };
+    if (text && isValidHttpUrl(source) && category && textLength <= 200) {
+      // 3. create a new fact object
+      // const newFact = {
+      //   id: Math.round(Math.random()) * 10000000,
+      //   text,
+      //   source,
+      //   category,
+      //   votesInteresting: 0,
+      //   votesMindblowing: 0,
+      //   votesFalse: 0,
+      //   createdIn: new Date().getFullYear(),
+      // };
 
-    // 3. upload fact to supabase and receive the new fact object
-    setIsUploading(true);
-    const { data: newFact, error } = await supabase
-      .from("facts")
-      .insert([{ text, source, category }])
-      .select();
-    setIsUploading(false);
+      // 3. upload fact to supabase and receive the new fact object
+      setIsUploading(true);
+      const { data: newFact, error } = await supabase
+        .from("facts")
+        .insert([{ text, source, category }])
+        .select();
+      setIsUploading(false);
 
-    // 4. add the new fact to the UI: add the fact to the state
-    if (!error) setFacts((facts) => [newFact[0], ...facts]);
+      // 4. add the new fact to the UI: add the fact to the state
+      if (!error) setFacts((facts) => [newFact[0], ...facts]);
 
-    // 5. reset the input fields
-    setText("");
-    setSource("");
-    setCategory("");
-    // 6. close the form
-    setShowForm(false);
+      // 5. reset the input fields
+      setText("");
+      setSource("");
+      setCategory("");
+      // 6. close the form
+      setShowForm(false);
+    }
   }
 
   return (
@@ -241,14 +246,14 @@ function CategoryFilter({ setCurrentCategory }) {
   );
 }
 
-function FactList({ facts }) {
+function FactList({ facts, setFacts }) {
   if (facts.length === 0)
     return <p className="message">No facts for this category yet!</p>;
   return (
     <section>
       <ul className="facts-list">
         {facts.map((fact) => (
-          <Fact key={fact.id} fact={fact} />
+          <Fact key={fact.id} fact={fact} setFacts={setFacts} />
         ))}
       </ul>
       <p>There are {facts.length} facts in the database. Add your own!</p>
@@ -256,10 +261,30 @@ function FactList({ facts }) {
   );
 }
 
-function Fact({ fact }) {
+function Fact({ fact, setFacts }) {
+const [isUpdating, setIsUpdating] = useState(false);
+const isDisputed = fact.votesInteresting + fact.votesMindblowing < fact.votesFalse;
+
+  async function handleVote(columnName) {
+    setIsUpdating(true);
+    const { data: updatedFact, error } = await supabase
+      .from("facts")
+      .update({ [columnName]: fact[columnName] + 1 })
+      .eq("id", fact.id)
+      .select();
+      setIsUpdating(false);
+
+    if (!error && updatedFact && updatedFact.length > 0) {
+      setFacts((facts) =>
+        facts.map((f) => (f.id === fact.id ? updatedFact[0] : f))
+      );
+    }
+  }
+
   return (
     <li className="fact">
       <p>
+        {isDisputed ? <span className="disputed">[DISPUTED]</span> : null}
         {fact.text}
         <a className="source" href={fact.source} target="_blank">
           (Source)
@@ -268,16 +293,17 @@ function Fact({ fact }) {
       <span
         className="tag"
         style={{
-          backgroundColor: CATEGORIES.find((cat) => cat.name === fact.category)
-            .color,
+          backgroundColor:
+            CATEGORIES.find((cat) => cat.name === fact.category)?.color ||
+            "#999",
         }}
       >
-        {fact.category}
+        {fact.category || "No category"}
       </span>
       <div className="vote-buttons">
-        <button>👍 {fact.votesInteresting}</button>
-        <button>🤯 {fact.votesMindblowing}</button>
-        <button>⛔️ {fact.votesFalse}</button>
+        <button onClick={ () => handleVote("votesInteresting")} disabled={isUpdating}>👍 {fact.votesInteresting}</button>
+        <button onClick={ () => handleVote("votesMindblowing")} disabled={isUpdating}>🤯 {fact.votesMindblowing}</button>
+        <button onClick={ () => handleVote("votesFalse")} disabled={isUpdating}>⛔️ {fact.votesFalse}</button>
       </div>
     </li>
   );
