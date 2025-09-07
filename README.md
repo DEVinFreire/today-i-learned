@@ -44,7 +44,7 @@ Este é um projeto **pessoal** desenvolvido para estudo e prática das tecnologi
 
 1. Clone o repositório:
    ```bash
-   git clone https://github.com/seu-usuario/today-i-learned.git
+   git clone https://github.com/DEVinFreire/today-i-learned.git   
    cd today-i-learned
    ```
 2. Instale as dependências:
