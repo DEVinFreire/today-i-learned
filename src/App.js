@@ -239,7 +239,7 @@ const isDisputed = fact.votesInteresting + fact.votesMindblowing < fact.votesFal
       <p>
         {isDisputed ? <span className="disputed">[DISPUTED]</span> : null}
         {fact.text}
-        <a className="source" href={fact.source} target="_blank">
+        <a className="source" href={fact.source} target="_blank" rel="noreferrer">
           (Source)
         </a>
       </p>
