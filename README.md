@@ -1,70 +1,68 @@
-# Getting Started with Create React App
+# Today I Learned
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Este é um projeto **pessoal** desenvolvido para estudo e prática das tecnologias **React**, **Supabase** e **Netlify**. O objetivo é criar uma aplicação web onde usuários podem compartilhar fatos interessantes, votar neles e filtrar por categorias.
 
-## Available Scripts
+## Tecnologias Utilizadas
 
-In the project directory, you can run:
+- **React**  
+  Utilizado para construir a interface do usuário de forma reativa e modular, com componentes funcionais e hooks (`useState`, `useEffect`).
 
-### `npm start`
+- **Supabase**  
+  Utilizado como backend-as-a-service, fornecendo banco de dados PostgreSQL e autenticação. Todas as operações de CRUD (criação, leitura, atualização) dos fatos são feitas via Supabase.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- **Netlify**  
+  O projeto está hospedado gratuitamente no Netlify, facilitando o deploy contínuo e acesso público.  
+  **Acesse em:** [https://devinfreirelearned.netlify.app/](https://devinfreirelearned.netlify.app/)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Funcionalidades
 
-### `npm test`
+- **Compartilhar fatos:**  
+  Usuários podem enviar fatos preenchendo um formulário, informando texto, fonte confiável e categoria.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- **Votação:**  
+  Cada fato pode receber votos de "Interessante", "Mindblowing" ou "Falso". Os votos são atualizados em tempo real no banco de dados.
 
-### `npm run build`
+- **Filtragem por categoria:**  
+  É possível visualizar fatos por categoria, facilitando a navegação e descoberta de novos conteúdos.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- **Validação de dados:**  
+  O formulário valida se o texto está preenchido, se a fonte é uma URL válida e se uma categoria foi escolhida.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- **Feedback visual:**  
+  Fatos com mais votos de "Falso" do que "Interessante" e "Mindblowing" são marcados como **DISPUTED**.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Estrutura do Projeto
 
-### `npm run eject`
+- `src/App.js`:  
+  Componente principal, gerencia estado global, renderiza o formulário, lista de fatos e filtro de categorias.
+- `src/supabase.js`:  
+  Configuração da conexão com Supabase.
+- `src/style.css`:  
+  Estilos da aplicação.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Como rodar localmente
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+1. Clone o repositório:
+   ```bash
+   git clone https://github.com/seu-usuario/today-i-learned.git
+   cd today-i-learned
+   ```
+2. Instale as dependências:
+   ```bash
+   npm install
+   ```
+3. Configure o arquivo `src/supabase.js` com suas credenciais do Supabase.
+4. Inicie o projeto:
+   ```bash
+   npm start
+   ```
+5. Acesse em `http://localhost:3000`.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Deploy
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+O deploy é feito automaticamente no Netlify a cada push na branch principal.  
+Acesse: [https://devinfreirelearned.netlify.app/](https://devinfreirelearned.netlify.app/)
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+**Este projeto é apenas para fins de estudo e aprendizado das tecnologias citadas. Sinta-se à vontade para explorar, modificar e sugerir melhorias!**
